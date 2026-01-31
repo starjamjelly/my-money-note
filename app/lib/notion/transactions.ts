@@ -1,13 +1,32 @@
-import type { Client } from "@notionhq/client";
-import type {
-  PageObjectResponse,
-  QueryDatabaseResponse,
-} from "@notionhq/client/build/src/api-endpoints";
+import type { NotionClient } from "./client";
 import type {
   Transaction,
   CreateTransactionInput,
   TransactionFilter,
 } from "./types";
+
+interface NotionPage {
+  id: string;
+  created_time: string;
+  properties: {
+    Name?: {
+      type: "title";
+      title: Array<{ plain_text: string }>;
+    };
+    Amount?: {
+      type: "number";
+      number: number | null;
+    };
+    Category?: {
+      type: "select";
+      select: { name: string } | null;
+    };
+    Date?: {
+      type: "date";
+      date: { start: string } | null;
+    };
+  };
+}
 
 function formatDate(date: Date): string {
   const year = date.getFullYear();
@@ -16,7 +35,7 @@ function formatDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-function parsePageToTransaction(page: PageObjectResponse): Transaction {
+function parsePageToTransaction(page: NotionPage): Transaction {
   const props = page.properties;
 
   // Name (Title)
@@ -65,12 +84,20 @@ function parsePageToTransaction(page: PageObjectResponse): Transaction {
   };
 }
 
+interface DateFilter {
+  property: string;
+  date: {
+    on_or_after?: string;
+    before?: string;
+  };
+}
+
 export async function getTransactions(
-  client: Client,
+  client: NotionClient,
   databaseId: string,
   filter?: TransactionFilter
 ): Promise<Transaction[]> {
-  const filters: Parameters<typeof client.databases.query>[0]["filter"][] = [];
+  const filters: DateFilter[] = [];
 
   if (filter) {
     const startDate = `${filter.year}-${String(filter.month).padStart(2, "0")}-01`;
@@ -92,8 +119,7 @@ export async function getTransactions(
     });
   }
 
-  const queryOptions: Parameters<typeof client.databases.query>[0] = {
-    database_id: databaseId,
+  const queryOptions: Record<string, unknown> = {
     sorts: [
       {
         property: "Date",
@@ -108,13 +134,15 @@ export async function getTransactions(
     };
   }
 
-  const response: QueryDatabaseResponse =
-    await client.databases.query(queryOptions);
+  const response = await client.queryDatabase<NotionPage>(
+    databaseId,
+    queryOptions
+  );
 
   const transactions: Transaction[] = [];
   for (const page of response.results) {
     if ("properties" in page) {
-      transactions.push(parsePageToTransaction(page as PageObjectResponse));
+      transactions.push(parsePageToTransaction(page));
     }
   }
 
@@ -122,13 +150,13 @@ export async function getTransactions(
 }
 
 export async function createTransaction(
-  client: Client,
+  client: NotionClient,
   databaseId: string,
   input: CreateTransactionInput
 ): Promise<Transaction> {
   const date = input.date ?? formatDate(new Date());
 
-  const response = await client.pages.create({
+  const response = await client.createPage<NotionPage>({
     parent: { database_id: databaseId },
     properties: {
       Name: {
@@ -146,15 +174,14 @@ export async function createTransaction(
     },
   });
 
-  return parsePageToTransaction(response as PageObjectResponse);
+  return parsePageToTransaction(response);
 }
 
 export async function deleteTransaction(
-  client: Client,
+  client: NotionClient,
   pageId: string
 ): Promise<void> {
-  await client.pages.update({
-    page_id: pageId,
+  await client.updatePage(pageId, {
     archived: true,
   });
 }

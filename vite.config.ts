@@ -38,8 +38,5 @@ export default defineConfig(({ mode }) => {
         "@": "/app",
       },
     },
-    ssr: {
-      external: ["@notionhq/client"],
-    },
   };
 });

@@ -3,8 +3,4 @@
   "name": "my-money-note",
   "compatibility_date": "2025-01-27",
   "pages_build_output_dir": "dist",
-
-  // Node.js 互換モードを有効化
-  // - @notionhq/client の利用に必要
-  "compatibility_flags": ["nodejs_compat"]
 }

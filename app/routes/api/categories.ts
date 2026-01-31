@@ -18,7 +18,8 @@ app.get("/", async (c) => {
     return c.json({ categories: categories.map((cat) => cat.name) });
   } catch (error) {
     console.error("Failed to fetch categories:", error);
-    return c.json({ error: "カテゴリの取得に失敗しました" }, 500);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return c.json({ error: "カテゴリの取得に失敗しました", detail: errorMessage }, 500);
   }
 });
 

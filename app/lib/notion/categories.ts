@@ -1,15 +1,21 @@
-import type { Client } from "@notionhq/client";
-import type {
-  PageObjectResponse,
-  QueryDatabaseResponse,
-} from "@notionhq/client/build/src/api-endpoints";
+import type { NotionClient } from "./client";
 
 export interface CategoryItem {
   id: string;
   name: string;
 }
 
-function parsePageToCategory(page: PageObjectResponse): CategoryItem | null {
+interface NotionPage {
+  id: string;
+  properties: {
+    Name?: {
+      type: "title";
+      title: Array<{ plain_text: string }>;
+    };
+  };
+}
+
+function parsePageToCategory(page: NotionPage): CategoryItem | null {
   const props = page.properties;
 
   // Name (Title)
@@ -28,11 +34,10 @@ function parsePageToCategory(page: PageObjectResponse): CategoryItem | null {
 }
 
 export async function getCategories(
-  client: Client,
+  client: NotionClient,
   databaseId: string
 ): Promise<CategoryItem[]> {
-  const response: QueryDatabaseResponse = await client.databases.query({
-    database_id: databaseId,
+  const response = await client.queryDatabase<NotionPage>(databaseId, {
     sorts: [
       {
         property: "Name",
@@ -44,7 +49,7 @@ export async function getCategories(
   const categories: CategoryItem[] = [];
   for (const page of response.results) {
     if ("properties" in page) {
-      const category = parsePageToCategory(page as PageObjectResponse);
+      const category = parsePageToCategory(page);
       if (category) {
         categories.push(category);
       }

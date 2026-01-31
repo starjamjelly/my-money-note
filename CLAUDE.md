@@ -73,4 +73,3 @@ app/
 ### Vite開発サーバー
 
 - `.dev.vars`を読み込むために`@hono/vite-dev-server/cloudflare`アダプターを使用
-- `ssr.external`に`@notionhq/client`を指定（CommonJSモジュールのため）
