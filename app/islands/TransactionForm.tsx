@@ -240,7 +240,7 @@ export default function TransactionForm() {
               <button type="button" onClick={() => handlePad("9")} class="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm font-medium hover:bg-gray-100">9</button>
               <button type="button" onClick={() => handlePad("0")} class="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm font-medium hover:bg-gray-100">0</button>
               <button type="button" onClick={() => handlePad("00")} class="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm font-medium hover:bg-gray-100">00</button>
-              <button type="button" onClick={() => handlePad("DEL")} class="px-3 py-2 bg-red-50 text-red-600 rounded-lg border border-red-200 text-sm font-medium hover:bg-red-100">del</button>
+              <button type="button" onClick={() => handlePad("DEL")} class="px-3 py-2 bg-red-50 text-red-600 rounded-lg border border-red-200 text-sm font-medium hover:bg-red-100">DEL</button>
             </div>
           </div>
 
