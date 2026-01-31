@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(bun run lint)",
+      "Bash(bun run:*)"
+    ]
+  }
+}
