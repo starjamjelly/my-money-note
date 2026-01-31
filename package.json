@@ -7,7 +7,7 @@
     "dev": "bun --bun vite",
     "build": "bun --bun vite build",
     "preview": "bun --bun vite preview",
-    "deploy": "wrangler pages deploy dist",
+    "deploy": "wrangler deploy",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "typecheck": "tsc --noEmit"

@@ -2,7 +2,12 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "my-money-note",
   "compatibility_date": "2025-01-27",
-  "pages_build_output_dir": "dist",
+  "main": "dist/_worker.js",
+
+  // 静的アセットの設定
+  "assets": {
+    "directory": "dist/static"
+  },
 
   // Node.js 互換モードを有効化
   // - @notionhq/client の利用に必要
