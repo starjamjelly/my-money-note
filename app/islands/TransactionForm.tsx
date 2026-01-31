@@ -68,9 +68,6 @@ export default function TransactionForm() {
         if (response.ok) {
           const data = (await response.json()) as { categories: string[] };
           setCategories(data.categories);
-          if (data.categories.length > 0 && !category) {
-            setCategory(data.categories[0]);
-          }
         }
       } catch {
         // ignore
