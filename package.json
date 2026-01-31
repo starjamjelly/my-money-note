@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "bun --bun vite",
-    "build": "bun --bun vite build",
+    "build": "bun --bun vite build --mode client && bun --bun vite build",
     "preview": "bun --bun vite preview",
-    "deploy": "wrangler deploy",
+    "deploy": "wrangler pages deploy dist",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "typecheck": "tsc --noEmit"

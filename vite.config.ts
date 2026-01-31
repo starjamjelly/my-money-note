@@ -1,26 +1,45 @@
 import honox from "honox/vite";
+import client from "honox/vite/client";
 import { defineConfig } from "vite";
-import build from "@hono/vite-build/cloudflare-workers";
+import build from "@hono/vite-build/cloudflare-pages";
 import adapter from "@hono/vite-dev-server/cloudflare";
 
-export default defineConfig({
-  plugins: [
-    honox({
-      client: {
-        input: ["/app/client.ts", "/app/style.css"],
+export default defineConfig(({ mode }) => {
+  if (mode === "client") {
+    return {
+      plugins: [client()],
+      resolve: {
+        alias: {
+          "@": "/app",
+        },
       },
-      devServer: {
-        adapter,
+      build: {
+        rollupOptions: {
+          input: ["/app/client.ts", "/app/style.css"],
+        },
       },
-    }),
-    build(),
-  ],
-  resolve: {
-    alias: {
-      "@": "/app",
+    };
+  }
+
+  return {
+    plugins: [
+      honox({
+        client: {
+          input: ["/app/client.ts", "/app/style.css"],
+        },
+        devServer: {
+          adapter,
+        },
+      }),
+      build(),
+    ],
+    resolve: {
+      alias: {
+        "@": "/app",
+      },
     },
-  },
-  ssr: {
-    external: ["@notionhq/client"],
-  },
+    ssr: {
+      external: ["@notionhq/client"],
+    },
+  };
 });
