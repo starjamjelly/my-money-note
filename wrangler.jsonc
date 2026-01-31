@@ -3,4 +3,7 @@
   "name": "my-money-note",
   "compatibility_date": "2025-01-27",
   "pages_build_output_dir": "dist",
+
+  // Node.js互換モードを有効化
+  "compatibility_flags": ["nodejs_compat"],
 }
